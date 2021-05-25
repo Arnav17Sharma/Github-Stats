@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Github Stats</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+	<!-- <link rel="stylesheet" type="text/css" href="../static/style.css">
+	<link rel="stylesheet" type="text/css" href="main.js"> -->
+	<script src="https://kit.fontawesome.com/f43423ee62.js" crossorigin="anonymous"></script>
+</head>
+<body>
+	<div class="user-detail">
+		<img src="{{data1['avatar_url']}}">
+		<div class="details">
+			<h1 style="font-size: 3rem">{{data1['login']}}</h1>
+			<h3>Joined - {{data1['created_at'][:10]}}</h3>
+			<h4>{{data1['bio']}}</h4>
+			<h4>followers - {{data1['followers']}}</h4>
+			<h4>following - {{data1['following']}}</h4>
+		</div>
+	</div>
+	<div class="repo-containers">
+		{% for repo in data %}
+		<div class="repo-container">
+			<h1>{{data1['login']}}/<span style="font-weight: 900">{{repo['name']}}</span></h1>
+			<div class="sub">
+				<p><i class="fas fa-user-friends"></i>{{repo['contributors_len']}}</p>
+				<p><i class="far fa-star"></i>{{repo['stargazers_count']}}</p>
+				<p><i class="fas fa-code-branch"></i>{{repo['forks']}}</p>
+				<p><i class="fas fa-exclamation-circle"></i>{{repo['open_issues']}}</p>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+	<div id="lang-chart"></div>
+	{{langs}}
+	{{rate['rate']}}
+
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+	<script src="{{ url_for('static', filename='main.js') }}"></script>
+	<script type="text/javascript">
+		let langs = {{ langs|tojson }}
+		langs_l = []
+		values = []
+		for (let key in langs) {
+			langs_l.push(key)
+			values.push(langs[key])
+		}
+		options = langChart()
+		options['series'] = values
+		options['labels'] = langs_l
+
+		var chart = new ApexCharts(document.querySelector("#lang-chart"), options);
+        chart.render();
+	</script>
+</body>
+</html>
